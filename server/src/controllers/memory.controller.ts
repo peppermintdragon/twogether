@@ -194,7 +194,7 @@ export async function getAlbums(req: Request, res: Response) {
     orderBy: { createdAt: 'desc' },
   });
 
-  const formatted = albums.map((a) => ({
+  const formatted = albums.map((a: typeof albums[number]) => ({
     id: a.id,
     name: a.name,
     coverPhoto: a.coverPhoto,

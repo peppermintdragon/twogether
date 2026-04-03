@@ -37,8 +37,8 @@ export async function getDashboard(req: Request, res: Response) {
     getNoteStreak(req.coupleId!),
   ]);
 
-  const myMood = moods.find((m) => m.userId === req.userId);
-  const partnerMood = moods.find((m) => m.userId !== req.userId);
+  const myMood = moods.find((m: typeof moods[number]) => m.userId === req.userId);
+  const partnerMood = moods.find((m: typeof moods[number]) => m.userId !== req.userId);
 
   return success(res, {
     daysTogether,
@@ -60,7 +60,7 @@ async function getUpcomingDates(coupleId: string) {
 
   const now = new Date();
   return dates
-    .map((d) => {
+    .map((d: typeof dates[number]) => {
       let nextOccurrence = new Date(d.date);
       if (d.isRecurring) {
         nextOccurrence.setFullYear(now.getFullYear());

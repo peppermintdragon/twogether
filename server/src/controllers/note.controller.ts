@@ -29,7 +29,7 @@ export async function getNotes(req: Request, res: Response) {
     prisma.dailyNote.count({ where }),
   ]);
 
-  const formatted = notes.map((n) => ({
+  const formatted = notes.map((n: typeof notes[number]) => ({
     id: n.id,
     content: n.content,
     emotionIcon: n.emotionIcon,
@@ -111,7 +111,7 @@ export async function getNoteStreak(req: Request, res: Response) {
     return success(res, { streak: 0 });
   }
 
-  const [user1, user2] = coupleUsers.map((cu) => cu.userId);
+  const [user1, user2] = coupleUsers.map((cu: { userId: string }) => cu.userId);
 
   // Find consecutive days where both users sent notes
   const result = await prisma.$queryRaw<[{ streak: bigint }]>`

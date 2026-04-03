@@ -49,8 +49,8 @@ export async function getTodayMoods(req: Request, res: Response) {
     include: { user: { select: { id: true, name: true } } },
   });
 
-  const myMood = moods.find((m) => m.userId === req.userId);
-  const partnerMood = moods.find((m) => m.userId !== req.userId);
+  const myMood = moods.find((m: typeof moods[number]) => m.userId === req.userId);
+  const partnerMood = moods.find((m: typeof moods[number]) => m.userId !== req.userId);
 
   return success(res, {
     myMood: myMood?.mood || null,
@@ -78,7 +78,7 @@ export async function getMoodCalendar(req: Request, res: Response) {
   // Group by date
   const calendar: Record<string, { myMood?: string; partnerMood?: string }> = {};
 
-  entries.forEach((e) => {
+  entries.forEach((e: typeof entries[number]) => {
     const dateKey = e.date.toISOString().split('T')[0];
     if (!calendar[dateKey]) calendar[dateKey] = {};
     if (e.userId === req.userId) {
@@ -120,7 +120,7 @@ export async function getMoodInsights(req: Request, res: Response) {
 
   // Calculate match rate
   const byDate: Record<string, Record<string, string>> = {};
-  entries.forEach((e) => {
+  entries.forEach((e: typeof entries[number]) => {
     const dateKey = e.date.toISOString().split('T')[0];
     if (!byDate[dateKey]) byDate[dateKey] = {};
     byDate[dateKey][e.userId] = e.mood;
@@ -130,13 +130,13 @@ export async function getMoodInsights(req: Request, res: Response) {
   let bothDays = 0;
   const moodCounts: Record<string, number> = {};
 
-  Object.values(byDate).forEach((dayMoods) => {
+  Object.values(byDate).forEach((dayMoods: Record<string, string>) => {
     const moods = Object.values(dayMoods);
     if (moods.length === 2) {
       bothDays++;
       if (moods[0] === moods[1]) matchDays++;
     }
-    moods.forEach((m) => {
+    moods.forEach((m: string) => {
       moodCounts[m] = (moodCounts[m] || 0) + 1;
     });
   });

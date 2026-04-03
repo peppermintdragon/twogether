@@ -14,7 +14,12 @@ export function getIO(): Server {
 export function initSocket(server: HttpServer) {
   io = new Server(server, {
     cors: {
-      origin: env.CLIENT_URL,
+      origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+        if (!origin) return callback(null, true);
+        if (origin.match(/^https?:\/\/localhost(:\d+)?$/)) return callback(null, true);
+        if (origin === env.CLIENT_URL) return callback(null, true);
+        callback(new Error('Not allowed by CORS'));
+      },
       methods: ['GET', 'POST'],
       credentials: true,
     },

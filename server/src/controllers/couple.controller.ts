@@ -28,7 +28,7 @@ export async function getCoupleProfile(req: Request, res: Response) {
     return error(res, 'Couple not found', 404);
   }
 
-  const partner = couple.coupleUsers.find((cu) => cu.userId !== req.userId);
+  const partner = couple.coupleUsers.find((cu: typeof couple.coupleUsers[number]) => cu.userId !== req.userId);
 
   return success(res, {
     id: couple.id,
@@ -40,7 +40,7 @@ export async function getCoupleProfile(req: Request, res: Response) {
     inviteCode: couple.invitations[0]?.code || '',
     createdAt: couple.createdAt.toISOString(),
     partner: partner?.user || null,
-    members: couple.coupleUsers.map((cu) => cu.user),
+    members: couple.coupleUsers.map((cu: typeof couple.coupleUsers[number]) => cu.user),
   });
 }
 

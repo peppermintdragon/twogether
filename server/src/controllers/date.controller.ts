@@ -9,7 +9,7 @@ export async function getSpecialDates(req: Request, res: Response) {
   });
 
   const now = new Date();
-  const formatted = dates.map((d) => {
+  const formatted = dates.map((d: typeof dates[number]) => {
     let nextOccurrence = new Date(d.date);
 
     if (d.isRecurring) {
@@ -119,7 +119,7 @@ export async function getMilestones(req: Request, res: Response) {
     { days: 3650, label: '10 Years', icon: '👑' },
   ];
 
-  const formatted = milestones.map((m) => ({
+  const formatted = milestones.map((m: typeof milestones[number]) => ({
     ...m,
     achieved: daysTogether >= m.days,
     daysUntil: Math.max(0, m.days - daysTogether),

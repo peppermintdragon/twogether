@@ -23,7 +23,7 @@ export async function getBucketList(req: Request, res: Response) {
     prisma.bucketListItem.count({ where }),
   ]);
 
-  const formatted = items.map((i) => ({
+  const formatted = items.map((i: typeof items[number]) => ({
     id: i.id,
     title: i.title,
     description: i.description,
