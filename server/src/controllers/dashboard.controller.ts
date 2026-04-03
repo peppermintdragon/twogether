@@ -75,7 +75,7 @@ async function getUpcomingDates(coupleId: string) {
         daysUntil: Math.max(0, Math.ceil((nextOccurrence.getTime() - now.getTime()) / 86400000)),
       };
     })
-    .sort((a, b) => a.daysUntil - b.daysUntil)
+    .sort((a: { daysUntil: number }, b: { daysUntil: number }) => a.daysUntil - b.daysUntil)
     .slice(0, 5);
 }
 

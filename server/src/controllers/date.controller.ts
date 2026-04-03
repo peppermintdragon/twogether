@@ -33,7 +33,7 @@ export async function getSpecialDates(req: Request, res: Response) {
   });
 
   // Sort by daysUntil
-  formatted.sort((a, b) => a.daysUntil - b.daysUntil);
+  formatted.sort((a: { daysUntil: number }, b: { daysUntil: number }) => a.daysUntil - b.daysUntil);
 
   return success(res, formatted);
 }
