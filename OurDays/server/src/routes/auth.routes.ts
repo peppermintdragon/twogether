@@ -6,7 +6,7 @@ import { authLimiter, strictLimiter } from '../middleware/rateLimiter.middleware
 import { avatarUpload } from '../middleware/upload.middleware.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import {
-  registerSchema, loginSchema, forgotPasswordSchema,
+  registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema,
   refreshTokenSchema, onboardingStep1Schema, onboardingStep3Schema,
   changePasswordSchema, updateProfileSchema,
 } from '../validators/auth.validator.js';
@@ -18,6 +18,7 @@ router.post('/register', authLimiter, validate(registerSchema), asyncHandler(aut
 router.post('/login', authLimiter, validate(loginSchema), asyncHandler(auth.login));
 router.post('/refresh', validate(refreshTokenSchema), asyncHandler(auth.refreshTokenHandler));
 router.post('/forgot-password', strictLimiter, validate(forgotPasswordSchema), asyncHandler(auth.forgotPassword));
+router.post('/reset-password', strictLimiter, validate(resetPasswordSchema), asyncHandler(auth.resetPassword));
 
 // Authenticated
 router.get('/me', authenticate, asyncHandler(auth.getMe));

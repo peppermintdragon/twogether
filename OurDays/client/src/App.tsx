@@ -10,6 +10,7 @@ import AppLayout from './components/layout/AppLayout';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import OnboardingPage from './pages/OnboardingPage';
 import DashboardPage from './pages/DashboardPage';
 import MemoriesPage from './pages/MemoriesPage';
@@ -77,6 +78,7 @@ export default function App() {
           <Route path="/login" element={<AuthRoute><LoginPage /></AuthRoute>} />
           <Route path="/register" element={<AuthRoute><RegisterPage /></AuthRoute>} />
           <Route path="/forgot-password" element={<AuthRoute><ForgotPasswordPage /></AuthRoute>} />
+          <Route path="/reset-password" element={<AuthRoute><ResetPasswordPage /></AuthRoute>} />
         </Route>
 
         {/* Onboarding */}

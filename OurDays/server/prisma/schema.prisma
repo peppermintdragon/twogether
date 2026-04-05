@@ -37,6 +37,7 @@ model User {
   invitationsSent     Invitation[]
   uploadedMedia       Media[]
   preferences         UserPreference?
+  passwordResets      PasswordReset[]
 
   @@index([email])
   @@index([deletedAt])
@@ -304,6 +305,22 @@ model Notification {
 
   @@index([userId, readAt])
   @@index([userId, createdAt])
+}
+
+// ─── Password Reset ─────────────────────────────────────────
+
+model PasswordReset {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
 }
 
 // ─── Session ─────────────────────────────────────────────────

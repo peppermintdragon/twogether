@@ -299,15 +299,64 @@ export async function changePassword(req: Request, res: Response) {
 export async function forgotPassword(req: Request, res: Response) {
   const { email } = req.body;
 
-  // Always return success to prevent email enumeration
   const user = await prisma.user.findUnique({ where: { email, deletedAt: null } });
-  if (user) {
-    // In production, send email with reset link
-    const _token = generateSecureToken();
-    // TODO: Send email with token
+  if (!user) {
+    // Return success to prevent email enumeration, but no token
+    return success(res, { sent: true }, 'If an account exists with that email, a reset link is available.');
   }
 
-  return success(res, null, 'If an account exists with that email, a reset link has been sent 📧');
+  // Invalidate any existing reset tokens for this user
+  await prisma.passwordReset.updateMany({
+    where: { userId: user.id, usedAt: null },
+    data: { usedAt: new Date() },
+  });
+
+  const token = generateSecureToken();
+  await prisma.passwordReset.create({
+    data: {
+      userId: user.id,
+      token,
+      expiresAt: new Date(Date.now() + 60 * 60 * 1000), // 1 hour
+    },
+  });
+
+  // TODO: In production, send email instead of returning token directly
+  return success(res, { sent: true, resetToken: token }, 'Password reset link is ready.');
+}
+
+export async function resetPassword(req: Request, res: Response) {
+  const { token, password } = req.body;
+
+  const resetRecord = await prisma.passwordReset.findUnique({
+    where: { token },
+  });
+
+  if (!resetRecord || resetRecord.usedAt) {
+    return error(res, 'This reset link is invalid or has already been used.', 400);
+  }
+
+  if (resetRecord.expiresAt < new Date()) {
+    return error(res, 'This reset link has expired. Please request a new one.', 400);
+  }
+
+  const passwordHash = await hashPassword(password);
+
+  await prisma.$transaction([
+    prisma.user.update({
+      where: { id: resetRecord.userId },
+      data: { passwordHash },
+    }),
+    prisma.passwordReset.update({
+      where: { id: resetRecord.id },
+      data: { usedAt: new Date() },
+    }),
+    // Invalidate all sessions for security
+    prisma.session.deleteMany({
+      where: { userId: resetRecord.userId },
+    }),
+  ]);
+
+  return success(res, null, 'Password has been reset successfully. Please log in with your new password.');
 }
 
 export async function logout(req: Request, res: Response) {

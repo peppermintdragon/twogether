@@ -4,7 +4,8 @@
       "Bash(where claude:*)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "Skill(update-config)",
-      "Skill(update-config:*)"
+      "Skill(update-config:*)",
+      "Bash(npm run:*)"
     ]
   }
 }
