@@ -10,19 +10,25 @@ const app = express();
 
 // Security
 app.use(helmet());
+
+const allowedOrigins = [
+  env.CLIENT_URL,
+  'https://twogetherclient-production.up.railway.app',
+].filter(Boolean);
+
 app.use(cors({
-  origin: (origin, callback) => {
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
     // Allow requests with no origin (mobile apps, curl, etc.)
     if (!origin) return callback(null, true);
     // Allow any localhost port in development
-    if (origin.match(/^https?:\/\/localhost(:\d+)?$/)) {
+    if (/^https?:\/\/localhost(:\d+)?$/.test(origin)) {
       return callback(null, true);
     }
-    // Allow configured client URL
-    if (origin === env.CLIENT_URL) {
+    // Allow configured and known production origins
+    if (allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
-    callback(new Error('Not allowed by CORS'));
+    callback(new Error(`Origin ${origin} not allowed by CORS`));
   },
   credentials: true,
 }));

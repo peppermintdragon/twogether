@@ -16,8 +16,9 @@ export function initSocket(server: HttpServer) {
     cors: {
       origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
         if (!origin) return callback(null, true);
-        if (origin.match(/^https?:\/\/localhost(:\d+)?$/)) return callback(null, true);
-        if (origin === env.CLIENT_URL) return callback(null, true);
+        if (/^https?:\/\/localhost(:\d+)?$/.test(origin)) return callback(null, true);
+        const allowed = [env.CLIENT_URL, 'https://twogetherclient-production.up.railway.app'].filter(Boolean);
+        if (allowed.includes(origin)) return callback(null, true);
         callback(new Error('Not allowed by CORS'));
       },
       methods: ['GET', 'POST'],
