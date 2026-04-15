@@ -145,27 +145,31 @@ export default function WritePage() {
             </section>
 
             {error ? <p className="form-error" role="alert">{error}</p> : null}
+          </div>
 
-            <div className="action-row">
-              <button
-                type="button"
-                className="secondary-button"
-                onClick={() => exportNotePng(exportRef.current, 'preview')}
-                aria-label="Download sticky note as PNG"
-              >
-                ⬇️ 存成 PNG
-              </button>
-              <motion.button
-                type="submit"
-                className="primary-button"
-                disabled={isSubmitting}
-                whileHover={{ y: -2, boxShadow: '0 16px 28px rgba(120, 87, 47, 0.25)' }}
-                whileTap={{ scale: 0.98 }}
-                aria-label="Post sticky note to the board"
-              >
-                {isSubmitting ? '貼上中...' : '📌 貼到黑板！'}
-              </motion.button>
-            </div>
+          <div className="note-maker__button-bar">
+            {error ? null : (
+              <>
+                <button
+                  type="button"
+                  className="secondary-button"
+                  onClick={() => exportNotePng(exportRef.current, 'preview')}
+                  aria-label="Download sticky note as PNG"
+                >
+                  ⬇️ 存成 PNG
+                </button>
+                <motion.button
+                  type="submit"
+                  className="primary-button"
+                  disabled={isSubmitting}
+                  whileHover={{ y: -2, boxShadow: '0 16px 28px rgba(120, 87, 47, 0.25)' }}
+                  whileTap={{ scale: 0.98 }}
+                  aria-label="Post sticky note to the board"
+                >
+                  {isSubmitting ? '貼上中...' : '📌 貼到黑板！'}
+                </motion.button>
+              </>
+            )}
           </div>
 
           <div className="write-layout__preview">
