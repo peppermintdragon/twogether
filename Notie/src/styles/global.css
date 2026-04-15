@@ -528,6 +528,26 @@ h1 {
   font-size: clamp(2rem, 5vw, 2rem);
 }
 
+.note-maker__content {
+  width: 100%;
+  overflow-y: auto;
+  height: 100vh;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.note-maker__shape-art {
+  width: 80%;
+  height: 80%;
+}
+
+.note-maker__credit-bar {
+  padding-bottom: 60px;
+}
+
 @media (min-width: 900px) {
   .app-bg {
     padding: 28px;
