@@ -2,7 +2,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import NoteCard from './NoteCard';
 
 export default function NotePreview({ note, exportRef, pulse }) {
-  const animationKey = `${note.designId}-${note.themeId}`;
+  // Support both underscore (DB / draftToNote) and camelCase (WritePage draft) conventions
+  const animationKey = `${note.design_id || note.designId}-${note.theme_id || note.themeId}`;
 
   return (
     <section className="preview-block">
@@ -19,12 +20,7 @@ export default function NotePreview({ note, exportRef, pulse }) {
         >
           <NoteCard
             preview
-            note={{
-              ...note,
-              id: 'preview',
-              theme_id: note.themeId,
-              design_id: note.designId,
-            }}
+            note={{ ...note, id: note.id || 'preview' }}
           />
         </motion.div>
       </AnimatePresence>

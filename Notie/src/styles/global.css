@@ -313,10 +313,11 @@ button {
   place-items: center;
   min-height: 110px;
   padding: 6px 8px;
-  font-size: 1.25rem;
+  font-size: clamp(1.44rem, 3vw, 1.6rem);
   font-weight: 800;
   line-height: 1.2;
   word-break: break-word;
+  text-align: center;
 }
 
 .note-card__footer {
@@ -759,5 +760,508 @@ h1 {
 
   .board-surface {
     min-height: 1180px;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   NOTIE WIZARD — NEW UI/UX (all additive, no existing rules overridden)
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Wizard shell ──────────────────────────────────────────────────────────── */
+.notie-wizard {
+  background: #f5f0ea;
+  transition: background 0.45s ease;
+}
+
+.notie-wizard--done {
+  background: linear-gradient(180deg, #b8864a 0%, #9a6e3a 100%);
+}
+
+/* ── Top progress bar ─────────────────────────────────────────────────────── */
+.wizard__topbar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 24px;
+  border-bottom: 1px solid rgba(200, 153, 90, 0.2);
+}
+
+.wizard__step-label {
+  font-size: 0.78rem;
+  color: #8a6a4c;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.wizard__step-label--sm {
+  font-size: 0.72rem;
+  color: #b6a18e;
+  letter-spacing: 0.04em;
+  margin-bottom: 8px;
+}
+
+.wizard__step-name {
+  font-size: 0.78rem;
+  color: #8a6a4c;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  margin: 0;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.wizard__progress-dots {
+  display: flex;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+
+.wizard__dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #d4c4b0;
+  transition: background 0.3s, width 0.3s;
+}
+
+.wizard__dot--active {
+  background: #c9835b;
+  width: 22px;
+  border-radius: 5px;
+}
+
+/* ── Scrollable content zone ─────────────────────────────────────────────── */
+.wizard__scroll-zone {
+  flex: 1;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 28px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.wizard__page {
+  width: 100%;
+  max-width: 640px;
+}
+
+/* ── Step container ──────────────────────────────────────────────────────── */
+.wizard__step {
+  width: 100%;
+}
+
+.wizard__step--no-padding-top {
+  padding-top: 0;
+}
+
+.wizard__step-category {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #b6a18e;
+  margin: 0 0 6px;
+}
+
+.wizard__title {
+  text-align: center;
+  color: #6b5344;
+  margin: 0 0 10px;
+  font-family: "Georgia", serif;
+  font-style: italic;
+  font-size: clamp(1.2rem, 3.5vw, 1.7rem);
+}
+
+.wizard__subtitle {
+  text-align: center;
+  color: #9a7d68;
+  font-size: 0.92rem;
+  margin: 0 0 22px;
+  line-height: 1.55;
+}
+
+/* ── Split layout (Step 2) ───────────────────────────────────────────────── */
+.wizard__split {
+  display: grid;
+  gap: 24px;
+  width: 100%;
+}
+
+@media (min-width: 700px) {
+  .wizard__split {
+    grid-template-columns: 1fr minmax(240px, 0.9fr);
+    align-items: start;
+  }
+}
+
+.wizard__split-preview {
+  display: flex;
+  flex-direction: column;
+}
+
+@media (min-width: 700px) {
+  .wizard__split-preview {
+    position: sticky;
+    top: 0;
+  }
+}
+
+/* ── Shape Carousel ──────────────────────────────────────────────────────── */
+.shape-carousel {
+  position: relative;
+  width: 100%;
+  height: 320px;
+  display: flex;
+  align-items: center;
+  user-select: none;
+  outline: none;
+  margin-top: 8px;
+}
+
+.shape-carousel__track {
+  flex: 1;
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.shape-carousel__track:active {
+  cursor: grabbing;
+}
+
+/* Each carousel item is position:absolute; framer-motion handles x/scale/opacity */
+.shape-carousel__item {
+  width: 200px;
+  min-height: 260px;
+  cursor: pointer;
+  /* The note-card CSS takes over from here */
+}
+
+/* Don't apply the hover lift for the NoteCard inside the carousel */
+.shape-carousel__item.is-interactive {
+  cursor: pointer;
+}
+
+/* Inner card content area for carousel items */
+.shape-carousel__inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Arrow buttons */
+.shape-carousel__arrow {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 249, 240, 0.92);
+  color: #8c6a49;
+  font-size: 1.8rem;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(110, 77, 45, 0.1);
+  transition: background 0.18s, box-shadow 0.18s, transform 0.15s;
+  z-index: 10;
+  position: relative;
+}
+
+.shape-carousel__arrow:hover {
+  background: #fff8f0;
+  box-shadow: 0 6px 18px rgba(110, 77, 45, 0.15);
+  transform: scale(1.05);
+}
+
+.shape-carousel__arrow:active {
+  transform: scale(0.96);
+}
+
+.shape-carousel__arrow:disabled {
+  opacity: 0.22;
+  pointer-events: none;
+}
+
+/* ── ThemePicker enhancements ──────────────────────────────────────────────── */
+.theme-picker {
+  gap: 16px;
+}
+
+.theme-picker__category-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #b6a18e;
+  margin: 0 0 8px;
+}
+
+/* Swatch hover (micro-interaction) */
+.swatch {
+  transition: transform 0.18s, box-shadow 0.18s;
+}
+
+.swatch:hover {
+  transform: scale(1.14);
+}
+
+/* ── Pattern tabs ────────────────────────────────────────────────────────── */
+.pattern-tabs {
+  display: flex;
+  gap: 4px;
+  margin: 0 0 12px;
+}
+
+.pattern-tab {
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  background: transparent;
+  color: #9a7d68;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.pattern-tab:hover {
+  background: rgba(140, 106, 73, 0.08);
+}
+
+.pattern-tab.is-active {
+  background: #5c4431;
+  color: #fff8f0;
+}
+
+/* ── Pattern grid ────────────────────────────────────────────────────────── */
+.pattern-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.pattern-tile-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.pattern-tile {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 14px;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+  box-shadow: 0 2px 6px rgba(92, 68, 49, 0.08);
+}
+
+.pattern-tile:hover {
+  box-shadow: 0 6px 16px rgba(92, 68, 49, 0.13);
+}
+
+.pattern-tile.is-active {
+  border-color: #8c6a49;
+  box-shadow: 0 0 0 3px rgba(140, 106, 73, 0.22), 0 4px 12px rgba(92, 68, 49, 0.1);
+}
+
+.pattern-tile__label {
+  font-size: 0.65rem;
+  text-align: center;
+  color: #9a7d68;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* ── Step 3 sticker preview ──────────────────────────────────────────────── */
+.wizard__sticker-preview {
+  margin-top: 20px;
+}
+
+/* ── Step 4 write — note preview stage ──────────────────────────────────── */
+.wizard__write-stage {
+  display: grid;
+  place-items: center;
+  min-height: 300px;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at top center, rgba(255, 255, 255, 0.06), transparent 45%),
+    linear-gradient(180deg, #c9a06a 0%, #b08050 100%);
+  margin-bottom: 24px;
+  padding: 24px 16px;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.08),
+    0 14px 36px rgba(80, 50, 20, 0.2);
+}
+
+.wizard__write-section {
+  display: grid;
+  gap: 18px;
+  width: 100%;
+}
+
+.wizard__label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #8a6a4c;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+/* ── Step 5 done screen ──────────────────────────────────────────────────── */
+.wizard__done {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 16px;
+}
+
+.wizard__done-title {
+  color: #fff8f0;
+  font-family: "Georgia", serif;
+  font-style: italic;
+  font-size: clamp(1.5rem, 4vw, 2.1rem);
+  text-align: center;
+  margin: 0 0 24px;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+}
+
+.wizard__done-stage {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  max-width: 420px;
+  padding: 28px 20px;
+  border-radius: 26px;
+  background:
+    radial-gradient(circle at top center, rgba(255, 255, 255, 0.05), transparent 55%),
+    rgba(0, 0, 0, 0.14);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.08);
+  margin-bottom: 28px;
+}
+
+.wizard__done-buttons {
+  display: grid;
+  gap: 10px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.wizard__done-btn {
+  min-height: 52px;
+  border-radius: 18px;
+  font-size: 0.96rem;
+}
+
+/* Primary done button: warm gold */
+.btn-done-primary {
+  background: linear-gradient(135deg, #d4a045, #c08c30) !important;
+  color: #fff8f0 !important;
+  box-shadow: 0 8px 22px rgba(180, 130, 40, 0.28) !important;
+}
+
+/* Secondary done button: near-black */
+.btn-done-secondary {
+  background: #2c1e14 !important;
+  color: #fff8f0 !important;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22) !important;
+}
+
+/* Tertiary done button: soft white */
+.btn-done-tertiary {
+  background: rgba(255, 252, 245, 0.92) !important;
+  color: #5c4431 !important;
+  box-shadow: inset 0 0 0 1px rgba(100, 72, 44, 0.14) !important;
+}
+
+/* Footer on done screen */
+.wizard__credit-bar--dark {
+  background: rgba(0, 0, 0, 0.22) !important;
+}
+
+/* ── Wizard button bar ───────────────────────────────────────────────────── */
+.wizard__button-bar {
+  flex-shrink: 0;
+  padding: 12px 24px 60px;
+  border-top: 1px solid rgba(200, 153, 90, 0.2);
+  background: #f5f0ea;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+/* ── Global micro-interactions ───────────────────────────────────────────── */
+
+/* Primary / secondary buttons: lift + shadow on hover, press-down on click */
+.primary-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(110, 77, 45, 0.2);
+}
+
+.primary-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.secondary-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px rgba(110, 77, 45, 0.14);
+}
+
+.secondary-button:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Sticker chips: slight scale on hover */
+.sticker-chip:hover {
+  transform: scale(1.08);
+  box-shadow: 0 4px 14px rgba(122, 95, 62, 0.14);
+}
+
+/* Style chips (WritePage): subtle lift */
+.style-chip:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(110, 77, 45, 0.1);
+}
+
+/* ── Responsive tweaks ────────────────────────────────────────────────────── */
+@media (max-width: 520px) {
+  .wizard__scroll-zone {
+    padding: 20px 16px;
+  }
+
+  .shape-carousel {
+    height: 280px;
+  }
+
+  .shape-carousel__item {
+    width: 170px;
+    min-height: 220px;
+  }
+
+  .pattern-grid {
+    gap: 6px;
+  }
+
+  .wizard__write-stage {
+    min-height: 260px;
+  }
+
+  .wizard__topbar {
+    padding: 12px 16px;
+  }
+
+  .wizard__step-name {
+    display: none; /* save space on very small screens */
   }
 }

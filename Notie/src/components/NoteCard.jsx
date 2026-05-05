@@ -2,6 +2,7 @@ import { forwardRef } from 'react';
 import { motion } from 'framer-motion';
 import { themeMap } from '../utils/colorThemes';
 import { noteDesignMap } from '../utils/noteDesigns';
+import { patternMap } from '../utils/paperPatterns';
 
 const MotionDiv = motion.div;
 
@@ -21,12 +22,18 @@ const NoteCard = forwardRef(function NoteCard(
   const stickers = note.stickers || [];
   const rotation = note.rotation || 0;
 
+  // Paper pattern: overlay on top of the solid surface colour
+  const pattern = patternMap[note.paper_id || note.paperId];
+  const patternBg = pattern?.css?.(theme.border) ?? null;
+
   const cardStyle = {
     '--note-surface': theme.surface,
     '--note-inner': theme.inner,
     '--note-border': theme.border,
     '--note-accent': theme.accent,
     '--note-shadow': theme.shadow,
+    // Merge pattern layers with the base surface colour when a pattern is selected
+    ...(patternBg && { background: `${patternBg}, ${theme.surface}` }),
     width: preview ? 'min(74vw, 280px)' : `${design.boardWidth}px`,
     minHeight: preview ? '290px' : `${design.boardHeight}px`,
     transform: board ? `rotate(${rotation}deg)` : undefined,
@@ -72,7 +79,7 @@ const NoteCard = forwardRef(function NoteCard(
         </div>
 
         <div className="note-card__message">
-          {note.message?.trim() || '說點什麼...'}
+          {note.message?.trim() || (preview ? '說點什麼...' : '')}
         </div>
 
         <div className="note-card__footer">
